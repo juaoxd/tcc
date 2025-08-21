@@ -23,8 +23,5 @@
 	"[typescriptreact]": {
 		"editor.defaultFormatter": "biomejs.biome"
 	},
-	"cSpell.words": [
-		"kysely",
-		"nodenext"
-	]
+	"cSpell.words": ["deve", "kysely", "nodenext", "pelo"]
 }

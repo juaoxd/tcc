@@ -1,6 +1,6 @@
 CREATE TABLE "usuarios" (
-	"id" serial PRIMARY KEY NOT NULL,
-	"nome" text NOT NULL,
+	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
+	"nome" text,
 	"email" text NOT NULL,
 	"senha_hash" text NOT NULL,
 	"created_at" timestamp DEFAULT now() NOT NULL,

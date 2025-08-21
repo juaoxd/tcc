@@ -1,6 +1,13 @@
 import { fastify } from 'fastify'
+import { serializerCompiler, validatorCompiler, type ZodTypeProvider } from 'fastify-type-provider-zod'
+import { registerRoute } from './http/routes/usuarios/register.ts'
 
-const server = fastify()
+const server = fastify().withTypeProvider<ZodTypeProvider>()
+
+server.setSerializerCompiler(serializerCompiler)
+server.setValidatorCompiler(validatorCompiler)
+
+server.register(registerRoute)
 
 server.get('/', (_, res) => {
 	res.send('Hello World')
