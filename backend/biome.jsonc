@@ -8,7 +8,6 @@
 			"quoteStyle": "single",
 			"semicolons": "asNeeded",
 			"lineWidth": 120,
-			"bracketsSameLine": true,
 			"bracketSpacing": true
 		}
 	}
