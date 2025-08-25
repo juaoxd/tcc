@@ -1,13 +1,31 @@
+import { fastifyCookie } from '@fastify/cookie'
+import { fastifyJwt } from '@fastify/jwt'
 import { fastify } from 'fastify'
 import { serializerCompiler, validatorCompiler, type ZodTypeProvider } from 'fastify-type-provider-zod'
+import { env } from './env.ts'
+import { loginRoute } from './http/routes/usuarios/login.ts'
 import { registerRoute } from './http/routes/usuarios/register.ts'
 
 const server = fastify().withTypeProvider<ZodTypeProvider>()
+
+server.register(fastifyCookie)
+
+server.register(fastifyJwt, {
+	secret: env.JWT_SECRET,
+	sign: {
+		expiresIn: '15m',
+	},
+	cookie: {
+		cookieName: 'refreshToken',
+		signed: false,
+	},
+})
 
 server.setSerializerCompiler(serializerCompiler)
 server.setValidatorCompiler(validatorCompiler)
 
 server.register(registerRoute)
+server.register(loginRoute)
 
 server.get('/', (_, res) => {
 	res.send('Hello World')
