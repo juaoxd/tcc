@@ -15,6 +15,13 @@
       "when": 1756165338082,
       "tag": "0001_long_warbound",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1756169436148,
+      "tag": "0002_quiet_speedball",
+      "breakpoints": true
     }
   ]
 }
