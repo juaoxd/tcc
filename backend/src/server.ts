@@ -3,6 +3,8 @@ import { fastifyJwt } from '@fastify/jwt'
 import { fastify } from 'fastify'
 import { serializerCompiler, validatorCompiler, type ZodTypeProvider } from 'fastify-type-provider-zod'
 import { env } from './env.ts'
+import { authMiddleware } from './http/middlewares/auth.ts'
+import { cadastrarTorneioRoute } from './http/routes/torneios/cadastrar.ts'
 import { loginRoute } from './http/routes/usuarios/login.ts'
 import { registerRoute } from './http/routes/usuarios/register.ts'
 
@@ -24,8 +26,11 @@ server.register(fastifyJwt, {
 server.setSerializerCompiler(serializerCompiler)
 server.setValidatorCompiler(validatorCompiler)
 
+server.decorate('authenticate', authMiddleware)
+
 server.register(registerRoute)
 server.register(loginRoute)
+server.register(cadastrarTorneioRoute)
 
 server.get('/', (_, res) => {
 	res.send('Hello World')
