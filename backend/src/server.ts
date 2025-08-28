@@ -1,4 +1,5 @@
 import { fastifyCookie } from '@fastify/cookie'
+import fastifyCors from '@fastify/cors'
 import { fastifyJwt } from '@fastify/jwt'
 import { fastify } from 'fastify'
 import { serializerCompiler, validatorCompiler, type ZodTypeProvider } from 'fastify-type-provider-zod'
@@ -11,6 +12,12 @@ import { loginRoute } from './http/routes/usuarios/login.ts'
 import { registerRoute } from './http/routes/usuarios/register.ts'
 
 const server = fastify().withTypeProvider<ZodTypeProvider>()
+
+server.register(fastifyCors, {
+	origin: 'http://localhost:5173',
+	methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+	allowedHeaders: ['Content-Type', 'Authorization'],
+})
 
 server.register(fastifyCookie)
 
