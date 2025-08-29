@@ -2,14 +2,20 @@ import './index.css'
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
 import { Register } from './pages/register'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+import { Home } from './pages/home'
+import { Login } from './pages/login'
+import { Toaster } from './components/ui/sonner'
 
 export function App() {
 	const queryClient = new QueryClient()
 	return (
 		<BrowserRouter>
 			<QueryClientProvider client={queryClient}>
+				<Toaster />
 				<Routes>
+					<Route path="/" element={<Home />} />
 					<Route path="/register" element={<Register />} />
+					<Route path="/login" element={<Login />} />
 				</Routes>
 			</QueryClientProvider>
 		</BrowserRouter>

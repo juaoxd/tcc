@@ -27,6 +27,11 @@ export function useRegisterAccount() {
 				},
 			})
 
+			if (!response.ok) {
+				const error = await response.json()
+				throw new Error(error.message)
+			}
+
 			const result: RegisterAccountResponse = await response.json()
 
 			return result
