@@ -5,7 +5,9 @@ import { fastify } from 'fastify'
 import { serializerCompiler, validatorCompiler, type ZodTypeProvider } from 'fastify-type-provider-zod'
 import { env } from './env.ts'
 import { authMiddleware } from './http/middlewares/auth.ts'
+import { aceitarConviteRoute } from './http/routes/equipes/aceitar-convite.ts'
 import { cadastrarEquipeRoute } from './http/routes/equipes/cadastrar.ts'
+import { convidarParticipanteRoute } from './http/routes/equipes/convidar-participante.ts'
 import { retornaEquipeRoute } from './http/routes/equipes/retorna-equipe.ts'
 import { cadastrarTorneioRoute } from './http/routes/torneios/cadastrar.ts'
 import { loginRoute } from './http/routes/usuarios/login.ts'
@@ -42,6 +44,8 @@ server.register(registerRoute)
 server.register(loginRoute)
 server.register(cadastrarTorneioRoute)
 server.register(cadastrarEquipeRoute)
+server.register(convidarParticipanteRoute)
+server.register(aceitarConviteRoute)
 server.register(retornaEquipeRoute)
 
 server.get('/', (_, res) => {
