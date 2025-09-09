@@ -9,6 +9,9 @@ export const cadastrarTorneioRoute: FastifyPluginCallbackZod = (app) => {
 		{
 			preHandler: [app.authenticate],
 			schema: {
+				description: 'Cadastra um novo torneio',
+				tags: ['torneios'],
+				summary: 'Cadastra um novo torneio',
 				body: z.object({
 					nome: z.string().min(3, 'Nome deve ter pelo menos 3 caracteres'),
 					descricao: z.string().optional(),

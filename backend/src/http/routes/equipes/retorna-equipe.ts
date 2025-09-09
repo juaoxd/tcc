@@ -9,6 +9,9 @@ export const retornaEquipeRoute: FastifyPluginCallbackZod = (app) => {
 		'/equipes/:idEquipe',
 		{
 			schema: {
+				description: 'Retorna uma equipe',
+				tags: ['equipes'],
+				summary: 'Retorna uma equipe',
 				params: z.object({
 					idEquipe: z.string(),
 				}),

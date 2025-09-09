@@ -10,6 +10,9 @@ export const convidarParticipanteRoute: FastifyPluginCallbackZod = (app) => {
 		{
 			preHandler: [app.authenticate],
 			schema: {
+				description: 'Convidar um participante para uma equipe',
+				tags: ['equipes'],
+				summary: 'Convidar um participante para uma equipe',
 				params: z.object({
 					idEquipe: z.string(),
 				}),

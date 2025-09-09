@@ -9,6 +9,9 @@ export const cadastrarEquipeRoute: FastifyPluginCallbackZod = (app) => {
 		{
 			preHandler: [app.authenticate],
 			schema: {
+				description: 'Cadastra uma nova equipe',
+				tags: ['equipes'],
+				summary: 'Cadastra uma nova equipe',
 				body: z.object({
 					nome: z.string().min(3, 'Nome deve ter pelo menos 3 caracteres'),
 				}),

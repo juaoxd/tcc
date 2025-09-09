@@ -10,11 +10,22 @@ export const registerRoute: FastifyPluginCallbackZod = (app) => {
 		'/register',
 		{
 			schema: {
+				description: 'Registra um novo usuário',
+				tags: ['usuarios'],
+				summary: 'Registra um novo usuário',
 				body: z.object({
 					nome: z.string().min(3, 'Nome deve ter pelo menos 3 caracteres'),
 					email: z.email(),
 					senha: z.string().min(8, 'Senha deve ter pelo menos 8 caracteres'),
 				}),
+				response: {
+					201: z.object({
+						id: z.string(),
+					}),
+					400: z.object({
+						message: z.string(),
+					}),
+				},
 			},
 		},
 		async (request, reply) => {

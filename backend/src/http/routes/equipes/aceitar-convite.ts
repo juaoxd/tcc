@@ -10,6 +10,9 @@ export const aceitarConviteRoute: FastifyPluginCallbackZod = (app) => {
 		{
 			preHandler: [app.authenticate],
 			schema: {
+				description: 'Aceita um convite de uma equipe',
+				tags: ['equipes'],
+				summary: 'Aceita um convite de uma equipe',
 				body: z.object({
 					token: z.string().min(1, 'Token de convite é obrigatório'),
 				}),

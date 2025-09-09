@@ -1,8 +1,15 @@
 import { fastifyCookie } from '@fastify/cookie'
 import fastifyCors from '@fastify/cors'
 import { fastifyJwt } from '@fastify/jwt'
+import { fastifySwagger } from '@fastify/swagger'
+import { fastifySwaggerUi } from '@fastify/swagger-ui'
 import { fastify } from 'fastify'
-import { serializerCompiler, validatorCompiler, type ZodTypeProvider } from 'fastify-type-provider-zod'
+import {
+	jsonSchemaTransform,
+	serializerCompiler,
+	validatorCompiler,
+	type ZodTypeProvider,
+} from 'fastify-type-provider-zod'
 import { env } from './env.ts'
 import { authMiddleware } from './http/middlewares/auth.ts'
 import { aceitarConviteRoute } from './http/routes/equipes/aceitar-convite.ts'
@@ -14,6 +21,24 @@ import { loginRoute } from './http/routes/usuarios/login.ts'
 import { registerRoute } from './http/routes/usuarios/register.ts'
 
 const server = fastify().withTypeProvider<ZodTypeProvider>()
+
+server.register(fastifySwagger, {
+	openapi: {
+		info: {
+			title: 'API',
+			version: '1.0.0',
+		},
+	},
+	transform: jsonSchemaTransform,
+})
+
+server.register(fastifySwaggerUi, {
+	routePrefix: '/docs',
+	uiConfig: {
+		docExpansion: 'full',
+		deepLinking: false,
+	},
+})
 
 server.register(fastifyCors, {
 	origin: 'http://localhost:5173',

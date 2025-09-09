@@ -10,6 +10,9 @@ export const loginRoute: FastifyPluginCallbackZod = (app) => {
 		'/login',
 		{
 			schema: {
+				description: 'Realiza o login de um usuário',
+				tags: ['usuarios'],
+				summary: 'Realiza o login de um usuário',
 				body: z.object({
 					email: z.email(),
 					senha: z.string(),
