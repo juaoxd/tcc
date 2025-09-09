@@ -1,4 +1,4 @@
-import { useMutation } from '@tanstack/react-query'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
 
 type LoginRequest = {
 	email: string
@@ -6,10 +6,16 @@ type LoginRequest = {
 }
 
 type LoginResponse = {
-	id: string
+	user: {
+		id: string
+		email: string
+	}
+	token: string
 }
 
 export function useLogin() {
+	const queryClient = useQueryClient()
+
 	return useMutation({
 		mutationFn: async (data: LoginRequest) => {
 			const response = await fetch('http://localhost:3333/login', {
@@ -33,6 +39,12 @@ export function useLogin() {
 
 			return result
 		},
-		onSuccess: () => {},
+		onSuccess: (data) => {
+			localStorage.setItem('accessToken', data.token)
+
+			queryClient.setQueryData(['auth'], { user: data.user })
+
+			queryClient.invalidateQueries({ queryKey: ['auth'] })
+		},
 	})
 }

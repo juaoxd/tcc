@@ -1,4 +1,4 @@
-import { Trophy, Users } from 'lucide-react'
+import { Trophy, Users, LogOut } from 'lucide-react'
 
 import {
 	Sidebar,
@@ -10,9 +10,11 @@ import {
 	SidebarMenu,
 	SidebarMenuButton,
 	SidebarMenuItem,
+	SidebarFooter,
 } from '@/components/ui/sidebar'
+import { useLogout } from '@/http/use-logout'
+import { Button } from '@/components/ui/button'
 
-// Menu items.
 const items = [
 	{
 		title: 'Organizador',
@@ -32,6 +34,12 @@ interface AppSidebarProps {
 }
 
 export function AppSidebar({ activeSection, onSectionChange }: AppSidebarProps) {
+	const logout = useLogout()
+
+	const handleLogout = () => {
+		logout.mutate()
+	}
+
 	return (
 		<Sidebar>
 			<SidebarHeader>
@@ -56,6 +64,16 @@ export function AppSidebar({ activeSection, onSectionChange }: AppSidebarProps) 
 					</SidebarGroupContent>
 				</SidebarGroup>
 			</SidebarContent>
+			<SidebarFooter>
+				<SidebarGroup>
+					<SidebarGroupContent>
+						<Button variant="ghost" className="w-full justify-start" onClick={handleLogout} disabled={logout.isPending}>
+							<LogOut className="mr-2 h-4 w-4" />
+							{logout.isPending ? 'Saindo...' : 'Sair'}
+						</Button>
+					</SidebarGroupContent>
+				</SidebarGroup>
+			</SidebarFooter>
 		</Sidebar>
 	)
 }

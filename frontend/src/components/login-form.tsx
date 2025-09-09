@@ -17,7 +17,7 @@ const loginSchema = z.object({
 type LoginFormData = z.infer<typeof loginSchema>
 
 export function LoginForm() {
-	const { mutateAsync: login } = useLogin()
+	const { mutateAsync: login, isPending } = useLogin()
 	const navigate = useNavigate()
 
 	const form = useForm<LoginFormData>({
@@ -32,7 +32,11 @@ export function LoginForm() {
 		try {
 			await login(data)
 
-			navigate('/')
+			toast.success('Login realizado com sucesso!')
+
+			setTimeout(() => {
+				navigate('/')
+			}, 100)
 		} catch (error) {
 			toast.error('Erro ao fazer login', {
 				description: error instanceof Error ? error.message : 'Erro ao fazer login',
@@ -82,8 +86,8 @@ export function LoginForm() {
 							}}
 						/>
 
-						<Button type="submit" className="w-full">
-							Entrar
+						<Button type="submit" className="w-full" disabled={isPending}>
+							{isPending ? 'Entrando...' : 'Entrar'}
 						</Button>
 					</form>
 				</Form>
