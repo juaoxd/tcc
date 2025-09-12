@@ -32,8 +32,6 @@ export function LoginForm() {
 		try {
 			await login(data)
 
-			toast.success('Login realizado com sucesso!')
-
 			setTimeout(() => {
 				navigate('/')
 			}, 100)

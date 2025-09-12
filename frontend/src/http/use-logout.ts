@@ -1,8 +1,10 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { removeAccessToken, getAccessToken } from '@/hooks/use-auth'
+import { useNavigate } from 'react-router-dom'
 
 export function useLogout() {
 	const queryClient = useQueryClient()
+	const navigate = useNavigate()
 
 	return useMutation({
 		mutationFn: async () => {
@@ -27,9 +29,13 @@ export function useLogout() {
 		},
 		onSuccess: () => {
 			queryClient.removeQueries({ queryKey: ['auth'] })
+			queryClient.invalidateQueries({ queryKey: ['auth'] })
+			navigate('/login', { replace: true })
 		},
 		onError: () => {
 			queryClient.removeQueries({ queryKey: ['auth'] })
+			queryClient.invalidateQueries({ queryKey: ['auth'] })
+			navigate('/login', { replace: true })
 		},
 	})
 }
