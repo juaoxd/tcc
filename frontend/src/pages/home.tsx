@@ -10,6 +10,7 @@ import { Skeleton } from '@/components/ui/skeleton'
 import { useListUserTournaments } from '@/http/use-list-user-tournaments'
 import { useListUserTeams } from '@/http/use-list-user-teams'
 import { useState } from 'react'
+import { Users, Calendar, Trophy, Settings, UserPlus, Eye, Crown, Shield, Play, Edit3 } from 'lucide-react'
 
 export function Home() {
 	const [activeSection, setActiveSection] = useState('organizer')
@@ -37,6 +38,65 @@ export function Home() {
 				return 'Vôlei'
 			default:
 				return sport
+		}
+	}
+
+	const getRoleIcon = (role: string) => {
+		switch (role?.toLowerCase()) {
+			case 'captain':
+			case 'capitão':
+			case 'lider':
+				return <Crown className="h-4 w-4 text-yellow-600" />
+			case 'admin':
+			case 'administrador':
+				return <Shield className="h-4 w-4 text-blue-600" />
+			default:
+				return <Users className="h-4 w-4 text-gray-600" />
+		}
+	}
+
+	const getRoleBadgeStyle = (role: string) => {
+		switch (role?.toLowerCase()) {
+			case 'captain':
+			case 'capitão':
+			case 'lider':
+				return 'bg-yellow-100 text-yellow-800 border-yellow-200'
+			case 'admin':
+			case 'administrador':
+				return 'bg-blue-100 text-blue-800 border-blue-200'
+			default:
+				return 'bg-gray-100 text-gray-800 border-gray-200'
+		}
+	}
+
+	const getRandomSport = () => {
+		const sports = ['FUTEBOL', 'BASQUETE', 'VOLEI']
+		return sports[Math.floor(Math.random() * sports.length)]
+	}
+
+	const getRandomMembersCount = () => {
+		return Math.floor(Math.random() * 15) + 5 // 5 a 19 membros
+	}
+
+	const getRandomParticipantsCount = () => {
+		return Math.floor(Math.random() * 20) + 8 // 8 a 27 participantes
+	}
+
+	const getTournamentStatus = () => {
+		const statuses = ['Inscrições abertas', 'Em andamento', 'Finalizado']
+		return statuses[Math.floor(Math.random() * statuses.length)]
+	}
+
+	const getTournamentStatusStyle = (status: string) => {
+		switch (status) {
+			case 'Inscrições abertas':
+				return 'bg-green-100 text-green-800 border-green-200'
+			case 'Em andamento':
+				return 'bg-blue-100 text-blue-800 border-blue-200'
+			case 'Finalizado':
+				return 'bg-gray-100 text-gray-800 border-gray-200'
+			default:
+				return 'bg-gray-100 text-gray-800 border-gray-200'
 		}
 	}
 
@@ -81,98 +141,168 @@ export function Home() {
 
 					{isLoading ? (
 						<div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-							<Card>
-								<CardHeader>
-									<Skeleton className="h-6 w-3/4" />
-								</CardHeader>
-								<CardContent className="space-y-4">
-									<div>
-										<Skeleton className="h-4 w-16 mb-2" />
-										<Skeleton className="h-5 w-20" />
-									</div>
-									<div>
-										<Skeleton className="h-4 w-16 mb-2" />
-										<Skeleton className="h-5 w-32" />
-									</div>
-									<Skeleton className="h-9 w-full" />
-								</CardContent>
-							</Card>
-							<Card>
-								<CardHeader>
-									<Skeleton className="h-6 w-3/4" />
-								</CardHeader>
-								<CardContent className="space-y-4">
-									<div>
-										<Skeleton className="h-4 w-16 mb-2" />
-										<Skeleton className="h-5 w-20" />
-									</div>
-									<div>
-										<Skeleton className="h-4 w-16 mb-2" />
-										<Skeleton className="h-5 w-32" />
-									</div>
-									<Skeleton className="h-9 w-full" />
-								</CardContent>
-							</Card>
-							<Card>
-								<CardHeader>
-									<Skeleton className="h-6 w-3/4" />
-								</CardHeader>
-								<CardContent className="space-y-4">
-									<div>
-										<Skeleton className="h-4 w-16 mb-2" />
-										<Skeleton className="h-5 w-20" />
-									</div>
-									<div>
-										<Skeleton className="h-4 w-16 mb-2" />
-										<Skeleton className="h-5 w-32" />
-									</div>
-									<Skeleton className="h-9 w-full" />
-								</CardContent>
-							</Card>
+							{Array.from({ length: 6 }, (_, index) => (
+								<Card key={`skeleton-tournament-${Math.random()}-${index}`} className="">
+									{/* Header com avatar e informações principais */}
+									<CardHeader className="pb-3">
+										<div className="flex items-center gap-3">
+											{/* Avatar do torneio */}
+											<Skeleton className="w-12 h-12 rounded-full" />
+											<div className="space-y-2">
+												<Skeleton className="h-5 w-32" />
+												<Skeleton className="h-4 w-24 rounded-full" />
+											</div>
+										</div>
+									</CardHeader>
+
+									<CardContent className="space-y-4">
+										{/* Informação de participantes discreta */}
+										<div className="flex items-center gap-2">
+											<Skeleton className="h-4 w-4" />
+											<Skeleton className="h-4 w-24" />
+										</div>
+
+										{/* Informações detalhadas */}
+										<div className="space-y-3">
+											<div className="flex items-center justify-between py-2 border-b border-gray-100">
+												<div className="flex items-center gap-2">
+													<Skeleton className="h-4 w-4" />
+													<Skeleton className="h-4 w-16" />
+												</div>
+												<Skeleton className="h-4 w-20" />
+											</div>
+											<div className="flex items-center justify-between py-2 border-b border-gray-100">
+												<div className="flex items-center gap-2">
+													<Skeleton className="h-4 w-4" />
+													<Skeleton className="h-4 w-16" />
+												</div>
+												<Skeleton className="h-4 w-20" />
+											</div>
+											<div className="flex items-center justify-between py-2">
+												<div className="flex items-center gap-2">
+													<Skeleton className="h-4 w-4" />
+													<Skeleton className="h-4 w-16" />
+												</div>
+												<Skeleton className="h-4 w-20" />
+											</div>
+										</div>
+
+										{/* Descrição */}
+										<div className="bg-gray-50 p-3 rounded-lg">
+											<Skeleton className="h-4 w-full mb-1" />
+											<Skeleton className="h-4 w-3/4" />
+										</div>
+
+										{/* Ações */}
+										<div className="pt-3 flex gap-2">
+											<Skeleton className="h-8 flex-1" />
+											<Skeleton className="h-8 flex-1" />
+											<Skeleton className="h-8 flex-1" />
+										</div>
+									</CardContent>
+								</Card>
+							))}
 						</div>
 					) : (
 						<>
 							<div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
 								{Array.isArray(tournaments) &&
-									tournaments.map((tournament) => (
-										<Card key={tournament.id}>
-											<CardHeader>
-												<CardTitle className="text-lg">{tournament.nome}</CardTitle>
-											</CardHeader>
-											<CardContent className="space-y-4">
-												<div className="grid grid-cols-2 gap-4">
-													<div>
-														<p className="text-sm text-muted-foreground">Esporte</p>
-														<p className="font-medium">{getSportLabel(tournament.esporte)}</p>
+									tournaments.map((tournament) => {
+										// Dados simulados para demonstração (substituir por dados reais da API)
+										const participantsCount = getRandomParticipantsCount()
+										const status = getTournamentStatus()
+
+										return (
+											<Card key={tournament.id} className="hover:shadow-lg transition-all duration-300">
+												{/* Header com avatar e informações principais */}
+												<CardHeader className="pb-3">
+													<div className="flex items-center gap-3">
+														{/* Avatar do torneio */}
+														<div className="w-12 h-12 rounded-full bg-gradient-to-br from-blue-500 to-gray-800 flex items-center justify-center text-white font-bold text-lg shadow-md">
+															<Trophy className="h-6 w-6" />
+														</div>
+														<div>
+															<CardTitle className="text-lg font-bold text-gray-900 leading-tight">
+																{tournament.nome}
+															</CardTitle>
+															<div className="flex items-center gap-2 mt-1">
+																<span
+																	className={`px-2 py-0.5 rounded-full text-xs font-medium border ${getTournamentStatusStyle(status)}`}
+																>
+																	{status}
+																</span>
+															</div>
+														</div>
 													</div>
-													<div>
-														<p className="text-sm text-muted-foreground">Equipes</p>
-														<p className="font-medium">{tournament.numeroEquipes || 4} equipes</p>
+												</CardHeader>
+
+												<CardContent className="space-y-4">
+													{/* Informação de participantes discreta */}
+													<div className="flex items-center gap-2 text-sm text-gray-500">
+														<Users className="h-4 w-4" />
+														<span>{participantsCount} participantes</span>
 													</div>
-												</div>
-												{tournament.descricao && (
-													<div>
-														<p className="text-sm text-muted-foreground">Descrição</p>
-														<p className="font-medium text-sm line-clamp-2">{tournament.descricao}</p>
+
+													{/* Informações detalhadas */}
+													<div className="space-y-3">
+														<div className="flex items-center justify-between py-2 border-b border-gray-100">
+															<div className="flex items-center gap-2 text-sm text-gray-600">
+																<Trophy className="h-4 w-4" />
+																<span>Esporte</span>
+															</div>
+															<span className="font-medium text-gray-900">{getSportLabel(tournament.esporte)}</span>
+														</div>
+
+														<div className="flex items-center justify-between py-2 border-b border-gray-100">
+															<div className="flex items-center gap-2 text-sm text-gray-600">
+																<Users className="h-4 w-4" />
+																<span>Equipes</span>
+															</div>
+															<span className="font-medium text-gray-900">{tournament.numeroEquipes || 4} equipes</span>
+														</div>
+
+														<div className="flex items-center justify-between py-2">
+															<div className="flex items-center gap-2 text-sm text-gray-600">
+																<Calendar className="h-4 w-4" />
+																<span>Criado em</span>
+															</div>
+															<span className="font-medium text-gray-900">{formatDate(tournament.createdAt)}</span>
+														</div>
 													</div>
-												)}
-												{(tournament.inicio || tournament.fim) && (
-													<div>
-														<p className="text-sm text-muted-foreground">Período</p>
-														<p className="font-medium text-sm">
-															{tournament.inicio ? formatDate(tournament.inicio) : 'Não definido'} -{' '}
-															{tournament.fim ? formatDate(tournament.fim) : 'Não definido'}
-														</p>
+
+													{tournament.descricao && (
+														<div className="bg-gray-50 p-3 rounded-lg">
+															<p className="text-sm text-gray-600 line-clamp-2">{tournament.descricao}</p>
+														</div>
+													)}
+
+													{/* Ações */}
+													<div className="pt-3 flex gap-2">
+														<Button
+															variant="outline"
+															size="sm"
+															className="flex-1 group hover:bg-blue-50 hover:border-blue-300"
+														>
+															<Eye className="h-4 w-4 mr-2 group-hover:text-blue-600" />
+															Detalhes
+														</Button>
+														<Button
+															variant="outline"
+															size="sm"
+															className="flex-1 group hover:bg-gray-50 hover:border-gray-300"
+														>
+															<Edit3 className="h-4 w-4 mr-2 group-hover:text-gray-800" />
+															Gerenciar
+														</Button>
+														<Button size="sm" className="flex-1">
+															<Play className="h-4 w-4 mr-2" />
+															Iniciar
+														</Button>
 													</div>
-												)}
-												<div className="pt-2">
-													<Button variant="outline" className="w-full">
-														Ver detalhes
-													</Button>
-												</div>
-											</CardContent>
-										</Card>
-									))}
+												</CardContent>
+											</Card>
+										)
+									})}
 							</div>
 
 							{(!Array.isArray(tournaments) || tournaments.length === 0) && !isLoading && !error && (
@@ -209,90 +339,158 @@ export function Home() {
 
 				{isLoadingTeams ? (
 					<div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-						<Card>
-							<CardHeader>
-								<Skeleton className="h-6 w-3/4" />
-							</CardHeader>
-							<CardContent className="space-y-4">
-								<div>
-									<Skeleton className="h-4 w-16 mb-2" />
-									<Skeleton className="h-5 w-20" />
-								</div>
-								<div>
-									<Skeleton className="h-4 w-16 mb-2" />
-									<Skeleton className="h-5 w-32" />
-								</div>
-								<Skeleton className="h-9 w-full" />
-							</CardContent>
-						</Card>
-						<Card>
-							<CardHeader>
-								<Skeleton className="h-6 w-3/4" />
-							</CardHeader>
-							<CardContent className="space-y-4">
-								<div>
-									<Skeleton className="h-4 w-16 mb-2" />
-									<Skeleton className="h-5 w-20" />
-								</div>
-								<div>
-									<Skeleton className="h-4 w-16 mb-2" />
-									<Skeleton className="h-5 w-32" />
-								</div>
-								<Skeleton className="h-9 w-full" />
-							</CardContent>
-						</Card>
-						<Card>
-							<CardHeader>
-								<Skeleton className="h-6 w-3/4" />
-							</CardHeader>
-							<CardContent className="space-y-4">
-								<div>
-									<Skeleton className="h-4 w-16 mb-2" />
-									<Skeleton className="h-5 w-20" />
-								</div>
-								<div>
-									<Skeleton className="h-4 w-16 mb-2" />
-									<Skeleton className="h-5 w-32" />
-								</div>
-								<Skeleton className="h-9 w-full" />
-							</CardContent>
-						</Card>
+						{Array.from({ length: 6 }, (_, index) => (
+							<Card key={`skeleton-team-${Math.random()}-${index}`} className="">
+								{/* Header com avatar e informações principais */}
+								<CardHeader className="pb-3">
+									<div className="flex items-center gap-3">
+										{/* Avatar da equipe */}
+										<Skeleton className="w-12 h-12 rounded-full" />
+										<div className="space-y-2">
+											<Skeleton className="h-5 w-32" />
+											<div className="flex items-center gap-2">
+												<Skeleton className="h-4 w-4 rounded" />
+												<Skeleton className="h-4 w-16 rounded-full" />
+											</div>
+										</div>
+									</div>
+								</CardHeader>
+
+								<CardContent className="space-y-4">
+									{/* Informação de membros discreta */}
+									<div className="flex items-center gap-2">
+										<Skeleton className="h-4 w-4" />
+										<Skeleton className="h-4 w-20" />
+									</div>
+
+									{/* Informações detalhadas */}
+									<div className="space-y-3">
+										<div className="flex items-center justify-between py-2 border-b border-gray-100">
+											<div className="flex items-center gap-2">
+												<Skeleton className="h-4 w-4" />
+												<Skeleton className="h-4 w-16" />
+											</div>
+											<Skeleton className="h-4 w-20" />
+										</div>
+										<div className="flex items-center justify-between py-2 border-b border-gray-100">
+											<div className="flex items-center gap-2">
+												<Skeleton className="h-4 w-4" />
+												<Skeleton className="h-4 w-16" />
+											</div>
+											<Skeleton className="h-4 w-20" />
+										</div>
+										<div className="flex items-center justify-between py-2">
+											<div className="flex items-center gap-2">
+												<Skeleton className="h-4 w-4" />
+												<Skeleton className="h-4 w-16" />
+											</div>
+											<Skeleton className="h-4 w-20" />
+										</div>
+									</div>
+
+									{/* Ações */}
+									<div className="pt-3 flex gap-2">
+										<Skeleton className="h-8 flex-1" />
+										<Skeleton className="h-8 flex-1" />
+										<Skeleton className="h-8 flex-1" />
+									</div>
+								</CardContent>
+							</Card>
+						))}
 					</div>
 				) : (
 					<>
 						<div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
 							{Array.isArray(teams?.equipes) &&
-								teams.equipes.map((team) => (
-									<Card key={team.id}>
-										<CardHeader>
-											<CardTitle className="text-lg">{team.nome}</CardTitle>
-										</CardHeader>
-										<CardContent className="space-y-4">
-											<div className="grid grid-cols-2 gap-4">
-												<div>
-													<p className="text-sm text-muted-foreground">Função</p>
-													<p className="font-medium">{team.funcao}</p>
+								teams.equipes.map((team) => {
+									// Dados simulados para demonstração (substituir por dados reais da API)
+									const sport = getRandomSport()
+									const membersCount = getRandomMembersCount()
+
+									return (
+										<Card key={team.id} className="hover:shadow-lg transition-all duration-300">
+											{/* Header com avatar e informações principais */}
+											<CardHeader className="pb-3">
+												<div className="flex items-center gap-3">
+													{/* Avatar da equipe */}
+													<div className="w-12 h-12 rounded-full bg-gradient-to-br from-blue-500 to-gray-800 flex items-center justify-center text-white font-bold text-lg shadow-md">
+														{team.nome.charAt(0).toUpperCase()}
+													</div>
+													<div>
+														<CardTitle className="text-lg font-bold text-gray-900 leading-tight">{team.nome}</CardTitle>
+														<div className="flex items-center gap-2 mt-1">
+															{getRoleIcon(team.funcao)}
+															<span
+																className={`px-2 py-0.5 rounded-full text-xs font-medium border ${getRoleBadgeStyle(team.funcao)}`}
+															>
+																{team.funcao}
+															</span>
+														</div>
+													</div>
 												</div>
-												<div>
-													<p className="text-sm text-muted-foreground">Criada em</p>
-													<p className="font-medium">{formatDate(team.createdAt)}</p>
+											</CardHeader>
+
+											<CardContent className="space-y-4">
+												{/* Informação de membros discreta */}
+												<div className="flex items-center gap-2 text-sm text-gray-500">
+													<Users className="h-4 w-4" />
+													<span>{membersCount} membros</span>
 												</div>
-											</div>
-											<div className="pt-2 flex gap-2">
-												<Button variant="outline" className="flex-1">
-													Ver detalhes
-												</Button>
-												<Button
-													variant="default"
-													className="flex-1"
-													onClick={() => openInviteDialog(team.id, team.nome)}
-												>
-													Convidar
-												</Button>
-											</div>
-										</CardContent>
-									</Card>
-								))}
+
+												{/* Informações detalhadas */}
+												<div className="space-y-3">
+													<div className="flex items-center justify-between py-2 border-b border-gray-100">
+														<div className="flex items-center gap-2 text-sm text-gray-600">
+															<Trophy className="h-4 w-4" />
+															<span>Esporte</span>
+														</div>
+														<span className="font-medium text-gray-900">{getSportLabel(sport)}</span>
+													</div>
+
+													<div className="flex items-center justify-between py-2 border-b border-gray-100">
+														<div className="flex items-center gap-2 text-sm text-gray-600">
+															<Calendar className="h-4 w-4" />
+															<span>Criada em</span>
+														</div>
+														<span className="font-medium text-gray-900">{formatDate(team.createdAt)}</span>
+													</div>
+
+													<div className="flex items-center justify-between py-2">
+														<div className="flex items-center gap-2 text-sm text-gray-600">
+															<Users className="h-4 w-4" />
+															<span>Próximo jogo</span>
+														</div>
+														<span className="font-medium text-gray-900">15/10/2024</span>
+													</div>
+												</div>
+
+												{/* Ações */}
+												<div className="pt-3 flex gap-2">
+													<Button
+														variant="outline"
+														size="sm"
+														className="flex-1 group hover:bg-blue-50 hover:border-blue-300"
+													>
+														<Eye className="h-4 w-4 mr-2 group-hover:text-blue-600" />
+														Detalhes
+													</Button>
+													<Button
+														variant="outline"
+														size="sm"
+														className="flex-1 group hover:bg-gray-50 hover:border-gray-300"
+													>
+														<Settings className="h-4 w-4 mr-2 group-hover:text-gray-800" />
+														Gerenciar
+													</Button>
+													<Button size="sm" className="flex-1" onClick={() => openInviteDialog(team.id, team.nome)}>
+														<UserPlus className="h-4 w-4 mr-2" />
+														Convidar
+													</Button>
+												</div>
+											</CardContent>
+										</Card>
+									)
+								})}
 						</div>
 
 						{(!Array.isArray(teams?.equipes) || teams?.equipes.length === 0) && !isLoadingTeams && !teamsError && (
