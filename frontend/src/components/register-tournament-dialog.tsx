@@ -23,7 +23,11 @@ const tournamentSchema = z.object({
 
 type TournamentFormData = z.infer<typeof tournamentSchema>
 
-export function RegisterTournamentDialog() {
+interface RegisterTournamentDialogProps {
+	onSuccess?: () => void
+}
+
+export function RegisterTournamentDialog({ onSuccess }: RegisterTournamentDialogProps) {
 	const registerTournament = useRegisterTournament()
 
 	const form = useForm<TournamentFormData>({
@@ -44,6 +48,7 @@ export function RegisterTournamentDialog() {
 				nome: data.nome,
 				descricao: data.descricao,
 				esporte: data.esporte,
+				numeroEquipes: Number(data.numeroEquipes),
 				inicio: data.inicio,
 				fim: data.fim,
 			},
@@ -51,6 +56,7 @@ export function RegisterTournamentDialog() {
 				onSuccess: () => {
 					toast.success('Torneio criado com sucesso!')
 					form.reset()
+					onSuccess?.()
 				},
 				onError: (error) => {
 					toast.error(error.message || 'Erro ao criar torneio')

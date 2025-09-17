@@ -16,6 +16,12 @@ export const cadastrarTorneioRoute: FastifyPluginCallbackZod = (app) => {
 					nome: z.string().min(3, 'Nome deve ter pelo menos 3 caracteres'),
 					descricao: z.string().optional(),
 					esporte: z.enum(['FUTEBOL', 'BASQUETE', 'VOLEI']).default('FUTEBOL'),
+					quantidadeEquipes: z
+						.number()
+						.refine((val) => [4, 8, 16].includes(val), {
+							message: 'Quantidade de equipes deve ser 4, 8 ou 16',
+						})
+						.default(4),
 					inicio: z.coerce.string().optional(),
 					fim: z.coerce.string().optional(),
 				}),
@@ -24,7 +30,7 @@ export const cadastrarTorneioRoute: FastifyPluginCallbackZod = (app) => {
 		async (request, reply) => {
 			const { sub } = request.user
 
-			const { nome, descricao, esporte, inicio, fim } = request.body
+			const { nome, descricao, esporte, quantidadeEquipes, inicio, fim } = request.body
 
 			const result = await db
 				.insert(schema.torneios)
@@ -32,6 +38,7 @@ export const cadastrarTorneioRoute: FastifyPluginCallbackZod = (app) => {
 					nome,
 					descricao,
 					esporte,
+					quantidadeEquipes,
 					inicio: inicio ? new Date(inicio) : undefined,
 					fim: fim ? new Date(fim) : undefined,
 					idAdministrador: sub,

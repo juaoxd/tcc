@@ -1,0 +1,264 @@
+{
+  "id": "4032e965-c583-4ec8-987e-5ec0d44751ac",
+  "prevId": "723c34d1-06a6-46f0-925b-73611dfb644c",
+  "version": "7",
+  "dialect": "postgresql",
+  "tables": {
+    "public.equipes": {
+      "name": "equipes",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "nome": {
+          "name": "nome",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.equipes_usuarios": {
+      "name": "equipes_usuarios",
+      "schema": "",
+      "columns": {
+        "id_equipe": {
+          "name": "id_equipe",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "id_usuario": {
+          "name": "id_usuario",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "funcao": {
+          "name": "funcao",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'PARTICIPANTE'"
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "equipes_usuarios_id_equipe_equipes_id_fk": {
+          "name": "equipes_usuarios_id_equipe_equipes_id_fk",
+          "tableFrom": "equipes_usuarios",
+          "tableTo": "equipes",
+          "columnsFrom": [
+            "id_equipe"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "equipes_usuarios_id_usuario_usuarios_id_fk": {
+          "name": "equipes_usuarios_id_usuario_usuarios_id_fk",
+          "tableFrom": "equipes_usuarios",
+          "tableTo": "usuarios",
+          "columnsFrom": [
+            "id_usuario"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {
+        "equipes_usuarios_id_equipe_id_usuario_pk": {
+          "name": "equipes_usuarios_id_equipe_id_usuario_pk",
+          "columns": [
+            "id_equipe",
+            "id_usuario"
+          ]
+        }
+      },
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.torneios": {
+      "name": "torneios",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "nome": {
+          "name": "nome",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "descricao": {
+          "name": "descricao",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "esporte": {
+          "name": "esporte",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'FUTEBOL'"
+        },
+        "quantidade_equipes": {
+          "name": "quantidade_equipes",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "default": 4
+        },
+        "id_administrador": {
+          "name": "id_administrador",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "inicio": {
+          "name": "inicio",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "fim": {
+          "name": "fim",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "torneios_id_administrador_usuarios_id_fk": {
+          "name": "torneios_id_administrador_usuarios_id_fk",
+          "tableFrom": "torneios",
+          "tableTo": "usuarios",
+          "columnsFrom": [
+            "id_administrador"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.usuarios": {
+      "name": "usuarios",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "nome": {
+          "name": "nome",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "email": {
+          "name": "email",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "senha_hash": {
+          "name": "senha_hash",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {
+        "usuarios_email_unique": {
+          "name": "usuarios_email_unique",
+          "nullsNotDistinct": false,
+          "columns": [
+            "email"
+          ]
+        }
+      },
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    }
+  },
+  "enums": {},
+  "schemas": {},
+  "sequences": {},
+  "roles": {},
+  "policies": {},
+  "views": {},
+  "_meta": {
+    "columns": {},
+    "schemas": {},
+    "tables": {}
+  }
+}

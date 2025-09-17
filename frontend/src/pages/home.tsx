@@ -35,6 +35,7 @@ const mockTeams = [
 
 export function Home() {
 	const [activeSection, setActiveSection] = useState('organizer')
+	const [isRegisterTournamentDialogOpen, setIsRegisterTournamentDialogOpen] = useState(false)
 	const { data: tournaments, isLoading, error } = useListUserTournaments()
 
 	const formatDate = (dateString: string) => {
@@ -63,11 +64,11 @@ export function Home() {
 							<h2 className="text-2xl font-semibold">Meus Torneios</h2>
 							<p className="text-muted-foreground">Gerencie e organize seus torneios</p>
 						</div>
-						<Dialog>
+						<Dialog open={isRegisterTournamentDialogOpen} onOpenChange={setIsRegisterTournamentDialogOpen}>
 							<DialogTrigger asChild>
 								<Button>Criar Torneio</Button>
 							</DialogTrigger>
-							<RegisterTournamentDialog />
+							<RegisterTournamentDialog onSuccess={() => setIsRegisterTournamentDialogOpen(false)} />
 						</Dialog>
 					</div>
 
@@ -135,31 +136,39 @@ export function Home() {
 									tournaments.map((tournament) => (
 										<Card key={tournament.id}>
 											<CardHeader>
-												<CardTitle>{tournament.nome}</CardTitle>
+												<CardTitle className="text-lg">{tournament.nome}</CardTitle>
 											</CardHeader>
 											<CardContent className="space-y-4">
-												<div>
-													<p className="text-sm text-muted-foreground">Esporte</p>
-													<p className="font-medium">{getSportLabel(tournament.esporte)}</p>
+												<div className="grid grid-cols-2 gap-4">
+													<div>
+														<p className="text-sm text-muted-foreground">Esporte</p>
+														<p className="font-medium">{getSportLabel(tournament.esporte)}</p>
+													</div>
+													<div>
+														<p className="text-sm text-muted-foreground">Equipes</p>
+														<p className="font-medium">{tournament.numeroEquipes || 4} equipes</p>
+													</div>
 												</div>
 												{tournament.descricao && (
 													<div>
 														<p className="text-sm text-muted-foreground">Descrição</p>
-														<p className="font-medium text-sm">{tournament.descricao}</p>
+														<p className="font-medium text-sm line-clamp-2">{tournament.descricao}</p>
 													</div>
 												)}
 												{(tournament.inicio || tournament.fim) && (
 													<div>
 														<p className="text-sm text-muted-foreground">Período</p>
-														<p className="font-medium">
-															{tournament.inicio ? formatDate(tournament.inicio) : '---'} -{' '}
-															{tournament.fim ? formatDate(tournament.fim) : '---'}
+														<p className="font-medium text-sm">
+															{tournament.inicio ? formatDate(tournament.inicio) : 'Não definido'} -{' '}
+															{tournament.fim ? formatDate(tournament.fim) : 'Não definido'}
 														</p>
 													</div>
 												)}
-												<Button variant="outline" className="w-full">
-													Ver detalhes
-												</Button>
+												<div className="pt-2">
+													<Button variant="outline" className="w-full">
+														Ver detalhes
+													</Button>
+												</div>
 											</CardContent>
 										</Card>
 									))}

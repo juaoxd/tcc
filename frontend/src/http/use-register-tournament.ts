@@ -5,6 +5,7 @@ type RegisterTournamentRequest = {
 	nome: string
 	descricao?: string
 	esporte?: 'FUTEBOL' | 'BASQUETE' | 'VOLEI'
+	numeroEquipes?: number
 	inicio?: string
 	fim?: string
 }
@@ -32,6 +33,7 @@ export function useRegisterTournament() {
 					nome: data.nome,
 					descricao: data.descricao,
 					esporte: data.esporte || 'FUTEBOL',
+					numeroEquipes: data.numeroEquipes || 4,
 					inicio: data.inicio,
 					fim: data.fim,
 				}),

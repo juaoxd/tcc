@@ -6,6 +6,7 @@ type Tournament = {
 	nome: string
 	descricao?: string
 	esporte: 'FUTEBOL' | 'BASQUETE' | 'VOLEI'
+	numeroEquipes?: number
 	inicio?: string | null
 	fim?: string | null
 	usuarioId: string

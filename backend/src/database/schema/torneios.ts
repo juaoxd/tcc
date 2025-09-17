@@ -1,4 +1,4 @@
-import { pgTable, text, timestamp, uuid } from 'drizzle-orm/pg-core'
+import { integer, pgTable, text, timestamp, uuid } from 'drizzle-orm/pg-core'
 import { usuarios } from './usuarios.ts'
 
 export const torneios = pgTable('torneios', {
@@ -6,6 +6,7 @@ export const torneios = pgTable('torneios', {
 	nome: text().notNull(),
 	descricao: text(),
 	esporte: text().notNull().default('FUTEBOL'),
+	quantidadeEquipes: integer().notNull().default(4),
 	idAdministrador: uuid().references(() => usuarios.id),
 	inicio: timestamp(),
 	fim: timestamp(),
