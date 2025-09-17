@@ -16,6 +16,18 @@ export const convidarParticipanteRoute: FastifyPluginCallbackZod = (app) => {
 				params: z.object({
 					idEquipe: z.string(),
 				}),
+				response: {
+					200: z.object({
+						linkConvite: z.string(),
+						expiresIn: z.string(),
+					}),
+					403: z.object({
+						message: z.string(),
+					}),
+					401: z.object({
+						message: z.string(),
+					}),
+				},
 			},
 		},
 		async (request, reply) => {

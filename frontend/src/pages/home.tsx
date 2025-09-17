@@ -1,5 +1,6 @@
 import { RegisterTeamDialog } from '@/components/register-team-dialog'
 import { RegisterTournamentDialog } from '@/components/register-tournament-dialog'
+import { InviteTeamDialog } from '@/components/invite-team-dialog'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Dialog, DialogTrigger } from '@/components/ui/dialog'
@@ -7,36 +8,20 @@ import { SidebarProvider, SidebarTrigger } from '@/components/ui/sidebar'
 import { AppSidebar } from '@/components/app-sidebar'
 import { Skeleton } from '@/components/ui/skeleton'
 import { useListUserTournaments } from '@/http/use-list-user-tournaments'
+import { useListUserTeams } from '@/http/use-list-user-teams'
 import { useState } from 'react'
-
-// Mock data para equipes
-const mockTeams = [
-	{
-		id: 1,
-		name: 'Águias Douradas',
-		abbreviation: 'AGD',
-	},
-	{
-		id: 2,
-		name: 'Leões Vermelhos',
-		abbreviation: 'LVR',
-	},
-	{
-		id: 3,
-		name: 'Tigres Azuis',
-		abbreviation: 'TAZ',
-	},
-	{
-		id: 4,
-		name: 'Falcões Negros',
-		abbreviation: 'FNE',
-	},
-]
 
 export function Home() {
 	const [activeSection, setActiveSection] = useState('organizer')
 	const [isRegisterTournamentDialogOpen, setIsRegisterTournamentDialogOpen] = useState(false)
+	const [isRegisterTeamDialogOpen, setIsRegisterTeamDialogOpen] = useState(false)
+	const [inviteTeamDialog, setInviteTeamDialog] = useState<{ isOpen: boolean; teamId: string; teamName: string }>({
+		isOpen: false,
+		teamId: '',
+		teamName: '',
+	})
 	const { data: tournaments, isLoading, error } = useListUserTournaments()
+	const { data: teams, isLoading: isLoadingTeams, error: teamsError } = useListUserTeams()
 
 	const formatDate = (dateString: string) => {
 		return new Date(dateString).toLocaleDateString('pt-BR')
@@ -53,6 +38,22 @@ export function Home() {
 			default:
 				return sport
 		}
+	}
+
+	const openInviteDialog = (teamId: string, teamName: string) => {
+		setInviteTeamDialog({
+			isOpen: true,
+			teamId,
+			teamName,
+		})
+	}
+
+	const closeInviteDialog = () => {
+		setInviteTeamDialog({
+			isOpen: false,
+			teamId: '',
+			teamName: '',
+		})
 	}
 
 	const renderContent = () => {
@@ -192,43 +193,114 @@ export function Home() {
 						<h2 className="text-2xl font-semibold">Minhas Equipes</h2>
 						<p className="text-muted-foreground">Equipes que você participa</p>
 					</div>
-					<Dialog>
+					<Dialog open={isRegisterTeamDialogOpen} onOpenChange={setIsRegisterTeamDialogOpen}>
 						<DialogTrigger asChild>
 							<Button>Criar Equipe</Button>
 						</DialogTrigger>
-						<RegisterTeamDialog />
+						<RegisterTeamDialog onSuccess={() => setIsRegisterTeamDialogOpen(false)} />
 					</Dialog>
 				</div>
 
-				<div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-					{mockTeams.map((team) => (
-						<Card key={team.id}>
+				{teamsError && (
+					<div className="text-center py-12">
+						<p className="text-red-500">Erro ao carregar equipes: {teamsError.message}</p>
+					</div>
+				)}
+
+				{isLoadingTeams ? (
+					<div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+						<Card>
 							<CardHeader>
-								<CardTitle>{team.name}</CardTitle>
+								<Skeleton className="h-6 w-3/4" />
 							</CardHeader>
 							<CardContent className="space-y-4">
 								<div>
-									<p className="text-sm text-muted-foreground">Sigla</p>
-									<p className="font-medium text-lg">{team.abbreviation}</p>
+									<Skeleton className="h-4 w-16 mb-2" />
+									<Skeleton className="h-5 w-20" />
 								</div>
-								<Button variant="outline" className="w-full">
-									Ver detalhes
-								</Button>
+								<div>
+									<Skeleton className="h-4 w-16 mb-2" />
+									<Skeleton className="h-5 w-32" />
+								</div>
+								<Skeleton className="h-9 w-full" />
 							</CardContent>
 						</Card>
-					))}
-				</div>
-
-				{mockTeams.length === 0 && (
-					<div className="text-center py-12">
-						<p className="text-muted-foreground">Você ainda não faz parte de nenhuma equipe.</p>
-						<Dialog>
-							<DialogTrigger asChild>
-								<Button className="mt-4">Criar sua primeira equipe</Button>
-							</DialogTrigger>
-							<RegisterTeamDialog />
-						</Dialog>
+						<Card>
+							<CardHeader>
+								<Skeleton className="h-6 w-3/4" />
+							</CardHeader>
+							<CardContent className="space-y-4">
+								<div>
+									<Skeleton className="h-4 w-16 mb-2" />
+									<Skeleton className="h-5 w-20" />
+								</div>
+								<div>
+									<Skeleton className="h-4 w-16 mb-2" />
+									<Skeleton className="h-5 w-32" />
+								</div>
+								<Skeleton className="h-9 w-full" />
+							</CardContent>
+						</Card>
+						<Card>
+							<CardHeader>
+								<Skeleton className="h-6 w-3/4" />
+							</CardHeader>
+							<CardContent className="space-y-4">
+								<div>
+									<Skeleton className="h-4 w-16 mb-2" />
+									<Skeleton className="h-5 w-20" />
+								</div>
+								<div>
+									<Skeleton className="h-4 w-16 mb-2" />
+									<Skeleton className="h-5 w-32" />
+								</div>
+								<Skeleton className="h-9 w-full" />
+							</CardContent>
+						</Card>
 					</div>
+				) : (
+					<>
+						<div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+							{Array.isArray(teams?.equipes) &&
+								teams.equipes.map((team) => (
+									<Card key={team.id}>
+										<CardHeader>
+											<CardTitle className="text-lg">{team.nome}</CardTitle>
+										</CardHeader>
+										<CardContent className="space-y-4">
+											<div className="grid grid-cols-2 gap-4">
+												<div>
+													<p className="text-sm text-muted-foreground">Função</p>
+													<p className="font-medium">{team.funcao}</p>
+												</div>
+												<div>
+													<p className="text-sm text-muted-foreground">Criada em</p>
+													<p className="font-medium">{formatDate(team.createdAt)}</p>
+												</div>
+											</div>
+											<div className="pt-2 flex gap-2">
+												<Button variant="outline" className="flex-1">
+													Ver detalhes
+												</Button>
+												<Button
+													variant="default"
+													className="flex-1"
+													onClick={() => openInviteDialog(team.id, team.nome)}
+												>
+													Convidar
+												</Button>
+											</div>
+										</CardContent>
+									</Card>
+								))}
+						</div>
+
+						{(!Array.isArray(teams?.equipes) || teams?.equipes.length === 0) && !isLoadingTeams && !teamsError && (
+							<div className="text-center py-12">
+								<p className="text-muted-foreground">Você ainda não faz parte de nenhuma equipe.</p>
+							</div>
+						)}
+					</>
 				)}
 			</div>
 		)
@@ -250,6 +322,15 @@ export function Home() {
 					</div>
 				</div>
 			</main>
+
+			{/* Diálogo de Convite para Equipe */}
+			<Dialog open={inviteTeamDialog.isOpen} onOpenChange={closeInviteDialog}>
+				<InviteTeamDialog
+					teamId={inviteTeamDialog.teamId}
+					teamName={inviteTeamDialog.teamName}
+					onClose={closeInviteDialog}
+				/>
+			</Dialog>
 		</SidebarProvider>
 	)
 }

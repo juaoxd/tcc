@@ -16,6 +16,17 @@ export const aceitarConviteRoute: FastifyPluginCallbackZod = (app) => {
 				body: z.object({
 					token: z.string().min(1, 'Token de convite é obrigatório'),
 				}),
+				response: {
+					200: z.object({
+						message: z.string(),
+					}),
+					400: z.object({
+						message: z.string(),
+					}),
+				},
+				401: z.object({
+					message: z.string(),
+				}),
 			},
 		},
 		async (request, reply) => {
@@ -45,7 +56,7 @@ export const aceitarConviteRoute: FastifyPluginCallbackZod = (app) => {
 					funcao: 'PARTICIPANTE',
 				})
 
-				return reply.status(201).send({
+				return reply.status(200).send({
 					message: 'Convite aceito com sucesso! Você agora faz parte da equipe.',
 				})
 			} catch {
