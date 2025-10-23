@@ -4,15 +4,17 @@ import { InviteTeamDialog } from '@/components/invite-team-dialog'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Dialog, DialogTrigger } from '@/components/ui/dialog'
-import { SidebarProvider, SidebarTrigger } from '@/components/ui/sidebar'
+import { SidebarProvider, SidebarTrigger, useSidebar } from '@/components/ui/sidebar'
 import { AppSidebar } from '@/components/app-sidebar'
 import { Skeleton } from '@/components/ui/skeleton'
 import { useListUserTournaments } from '@/http/use-list-user-tournaments'
 import { useListUserTeams } from '@/http/use-list-user-teams'
 import { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { Users, Calendar, Trophy, Settings, UserPlus, Eye, Crown, Shield, Play, Edit3 } from 'lucide-react'
 
-export function Home() {
+function HomeContent() {
+	const navigate = useNavigate()
 	const [activeSection, setActiveSection] = useState('organizer')
 	const [isRegisterTournamentDialogOpen, setIsRegisterTournamentDialogOpen] = useState(false)
 	const [isRegisterTeamDialogOpen, setIsRegisterTeamDialogOpen] = useState(false)
@@ -23,6 +25,7 @@ export function Home() {
 	})
 	const { data: tournaments, isLoading, error } = useListUserTournaments()
 	const { data: teams, isLoading: isLoadingTeams, error: teamsError } = useListUserTeams()
+	const { open } = useSidebar()
 
 	const formatDate = (dateString: string) => {
 		return new Date(dateString).toLocaleDateString('pt-BR')
@@ -143,10 +146,8 @@ export function Home() {
 						<div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
 							{Array.from({ length: 6 }, (_, index) => (
 								<Card key={`skeleton-tournament-${Math.random()}-${index}`} className="">
-									{/* Header com avatar e informações principais */}
 									<CardHeader className="pb-3">
 										<div className="flex items-center gap-3">
-											{/* Avatar do torneio */}
 											<Skeleton className="w-12 h-12 rounded-full" />
 											<div className="space-y-2">
 												<Skeleton className="h-5 w-32" />
@@ -156,13 +157,11 @@ export function Home() {
 									</CardHeader>
 
 									<CardContent className="space-y-4">
-										{/* Informação de participantes discreta */}
 										<div className="flex items-center gap-2">
 											<Skeleton className="h-4 w-4" />
 											<Skeleton className="h-4 w-24" />
 										</div>
 
-										{/* Informações detalhadas */}
 										<div className="space-y-3">
 											<div className="flex items-center justify-between py-2 border-b border-gray-100">
 												<div className="flex items-center gap-2">
@@ -187,17 +186,17 @@ export function Home() {
 											</div>
 										</div>
 
-										{/* Descrição */}
 										<div className="bg-gray-50 p-3 rounded-lg">
 											<Skeleton className="h-4 w-full mb-1" />
 											<Skeleton className="h-4 w-3/4" />
 										</div>
 
-										{/* Ações */}
-										<div className="pt-3 flex gap-2">
-											<Skeleton className="h-8 flex-1" />
-											<Skeleton className="h-8 flex-1" />
-											<Skeleton className="h-8 flex-1" />
+										<div className="pt-3 flex flex-col gap-2">
+											<div className="flex gap-2">
+												<Skeleton className="h-8 flex-1" />
+												<Skeleton className="h-8 flex-1" />
+											</div>
+											<Skeleton className="h-8 w-full" />
 										</div>
 									</CardContent>
 								</Card>
@@ -208,16 +207,13 @@ export function Home() {
 							<div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
 								{Array.isArray(tournaments) &&
 									tournaments.map((tournament) => {
-										// Dados simulados para demonstração (substituir por dados reais da API)
 										const participantsCount = getRandomParticipantsCount()
 										const status = getTournamentStatus()
 
 										return (
 											<Card key={tournament.id} className="hover:shadow-lg transition-all duration-300">
-												{/* Header com avatar e informações principais */}
 												<CardHeader className="pb-3">
 													<div className="flex items-center gap-3">
-														{/* Avatar do torneio */}
 														<div className="w-12 h-12 rounded-full bg-gradient-to-br from-blue-500 to-gray-800 flex items-center justify-center text-white font-bold text-lg shadow-md">
 															<Trophy className="h-6 w-6" />
 														</div>
@@ -237,13 +233,11 @@ export function Home() {
 												</CardHeader>
 
 												<CardContent className="space-y-4">
-													{/* Informação de participantes discreta */}
 													<div className="flex items-center gap-2 text-sm text-gray-500">
 														<Users className="h-4 w-4" />
 														<span>{participantsCount} participantes</span>
 													</div>
 
-													{/* Informações detalhadas */}
 													<div className="space-y-3">
 														<div className="flex items-center justify-between py-2 border-b border-gray-100">
 															<div className="flex items-center gap-2 text-sm text-gray-600">
@@ -276,25 +270,32 @@ export function Home() {
 														</div>
 													)}
 
-													{/* Ações */}
-													<div className="pt-3 flex gap-2">
+													<div className="pt-3 flex flex-col gap-2">
+														<div className="flex gap-2">
+															<Button
+																variant="outline"
+																size="sm"
+																className="flex-1 group hover:bg-blue-50 hover:border-blue-300"
+																onClick={() => navigate(`/torneio/${tournament.id}`)}
+															>
+																<Eye className="h-4 w-4 mr-2 group-hover:text-blue-600" />
+																Detalhes
+															</Button>
+															<Button
+																variant="outline"
+																size="sm"
+																className="flex-1 group hover:bg-gray-50 hover:border-gray-300"
+																onClick={() => navigate(`/torneio/${tournament.id}/gerenciar`)}
+															>
+																<Edit3 className="h-4 w-4 mr-2 group-hover:text-gray-800" />
+																Gerenciar
+															</Button>
+														</div>
 														<Button
-															variant="outline"
 															size="sm"
-															className="flex-1 group hover:bg-blue-50 hover:border-blue-300"
+															className="w-full"
+															onClick={() => navigate(`/torneio/${tournament.id}/iniciar`)}
 														>
-															<Eye className="h-4 w-4 mr-2 group-hover:text-blue-600" />
-															Detalhes
-														</Button>
-														<Button
-															variant="outline"
-															size="sm"
-															className="flex-1 group hover:bg-gray-50 hover:border-gray-300"
-														>
-															<Edit3 className="h-4 w-4 mr-2 group-hover:text-gray-800" />
-															Gerenciar
-														</Button>
-														<Button size="sm" className="flex-1">
 															<Play className="h-4 w-4 mr-2" />
 															Iniciar
 														</Button>
@@ -341,10 +342,8 @@ export function Home() {
 					<div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
 						{Array.from({ length: 6 }, (_, index) => (
 							<Card key={`skeleton-team-${Math.random()}-${index}`} className="">
-								{/* Header com avatar e informações principais */}
 								<CardHeader className="pb-3">
 									<div className="flex items-center gap-3">
-										{/* Avatar da equipe */}
 										<Skeleton className="w-12 h-12 rounded-full" />
 										<div className="space-y-2">
 											<Skeleton className="h-5 w-32" />
@@ -357,13 +356,11 @@ export function Home() {
 								</CardHeader>
 
 								<CardContent className="space-y-4">
-									{/* Informação de membros discreta */}
 									<div className="flex items-center gap-2">
 										<Skeleton className="h-4 w-4" />
 										<Skeleton className="h-4 w-20" />
 									</div>
 
-									{/* Informações detalhadas */}
 									<div className="space-y-3">
 										<div className="flex items-center justify-between py-2 border-b border-gray-100">
 											<div className="flex items-center gap-2">
@@ -388,11 +385,12 @@ export function Home() {
 										</div>
 									</div>
 
-									{/* Ações */}
-									<div className="pt-3 flex gap-2">
-										<Skeleton className="h-8 flex-1" />
-										<Skeleton className="h-8 flex-1" />
-										<Skeleton className="h-8 flex-1" />
+									<div className="pt-3 flex flex-col gap-2">
+										<div className="flex gap-2">
+											<Skeleton className="h-8 flex-1" />
+											<Skeleton className="h-8 flex-1" />
+										</div>
+										<Skeleton className="h-8 w-full" />
 									</div>
 								</CardContent>
 							</Card>
@@ -403,16 +401,13 @@ export function Home() {
 						<div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
 							{Array.isArray(teams?.equipes) &&
 								teams.equipes.map((team) => {
-									// Dados simulados para demonstração (substituir por dados reais da API)
 									const sport = getRandomSport()
 									const membersCount = getRandomMembersCount()
 
 									return (
 										<Card key={team.id} className="hover:shadow-lg transition-all duration-300">
-											{/* Header com avatar e informações principais */}
 											<CardHeader className="pb-3">
 												<div className="flex items-center gap-3">
-													{/* Avatar da equipe */}
 													<div className="w-12 h-12 rounded-full bg-gradient-to-br from-blue-500 to-gray-800 flex items-center justify-center text-white font-bold text-lg shadow-md">
 														{team.nome.charAt(0).toUpperCase()}
 													</div>
@@ -431,13 +426,11 @@ export function Home() {
 											</CardHeader>
 
 											<CardContent className="space-y-4">
-												{/* Informação de membros discreta */}
 												<div className="flex items-center gap-2 text-sm text-gray-500">
 													<Users className="h-4 w-4" />
 													<span>{membersCount} membros</span>
 												</div>
 
-												{/* Informações detalhadas */}
 												<div className="space-y-3">
 													<div className="flex items-center justify-between py-2 border-b border-gray-100">
 														<div className="flex items-center gap-2 text-sm text-gray-600">
@@ -464,25 +457,26 @@ export function Home() {
 													</div>
 												</div>
 
-												{/* Ações */}
-												<div className="pt-3 flex gap-2">
-													<Button
-														variant="outline"
-														size="sm"
-														className="flex-1 group hover:bg-blue-50 hover:border-blue-300"
-													>
-														<Eye className="h-4 w-4 mr-2 group-hover:text-blue-600" />
-														Detalhes
-													</Button>
-													<Button
-														variant="outline"
-														size="sm"
-														className="flex-1 group hover:bg-gray-50 hover:border-gray-300"
-													>
-														<Settings className="h-4 w-4 mr-2 group-hover:text-gray-800" />
-														Gerenciar
-													</Button>
-													<Button size="sm" className="flex-1" onClick={() => openInviteDialog(team.id, team.nome)}>
+												<div className="pt-3 flex flex-col gap-2">
+													<div className="flex gap-2">
+														<Button
+															variant="outline"
+															size="sm"
+															className="flex-1 group hover:bg-blue-50 hover:border-blue-300"
+														>
+															<Eye className="h-4 w-4 mr-2 group-hover:text-blue-600" />
+															Detalhes
+														</Button>
+														<Button
+															variant="outline"
+															size="sm"
+															className="flex-1 group hover:bg-gray-50 hover:border-gray-300"
+														>
+															<Settings className="h-4 w-4 mr-2 group-hover:text-gray-800" />
+															Gerenciar
+														</Button>
+													</div>
+													<Button size="sm" className="w-full" onClick={() => openInviteDialog(team.id, team.nome)}>
 														<UserPlus className="h-4 w-4 mr-2" />
 														Convidar
 													</Button>
@@ -505,23 +499,24 @@ export function Home() {
 	}
 
 	return (
-		<SidebarProvider>
+		<>
 			<AppSidebar activeSection={activeSection} onSectionChange={setActiveSection} />
 			<main className="flex-1 overflow-hidden">
 				<div className="flex h-full flex-col">
-					<header className="border-b bg-background px-6 py-3">
-						<div className="flex items-center gap-4">
-							<SidebarTrigger />
-							<h1 className="text-2xl font-bold">Dashboard</h1>
-						</div>
-					</header>
+					{!open && (
+						<header className="border-b bg-background px-6 py-3">
+							<div className="flex items-center gap-4">
+								<SidebarTrigger />
+								<h1 className="text-2xl font-bold"></h1>
+							</div>
+						</header>
+					)}
 					<div className="flex-1 overflow-y-auto p-6">
 						<div className="max-w-7xl mx-auto">{renderContent()}</div>
 					</div>
 				</div>
 			</main>
 
-			{/* Diálogo de Convite para Equipe */}
 			<Dialog open={inviteTeamDialog.isOpen} onOpenChange={closeInviteDialog}>
 				<InviteTeamDialog
 					teamId={inviteTeamDialog.teamId}
@@ -529,6 +524,14 @@ export function Home() {
 					onClose={closeInviteDialog}
 				/>
 			</Dialog>
+		</>
+	)
+}
+
+export function Home() {
+	return (
+		<SidebarProvider>
+			<HomeContent />
 		</SidebarProvider>
 	)
 }

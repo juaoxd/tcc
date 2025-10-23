@@ -1,5 +1,6 @@
 import { useMutation } from '@tanstack/react-query'
 import { toast } from 'sonner'
+import { httpClient } from '@/lib/http-client'
 
 interface InviteToTeamRequest {
 	idEquipe: string
@@ -11,30 +12,14 @@ interface InviteToTeamResponse {
 }
 
 async function inviteToTeam({ idEquipe }: InviteToTeamRequest): Promise<InviteToTeamResponse> {
-	const token = localStorage.getItem('accessToken')
-
-	if (!token) {
-		throw new Error('Token de autenticação não encontrado')
-	}
-
-	const response = await fetch(`http://localhost:3333/equipes/${idEquipe}/convite`, {
-		method: 'POST',
-		headers: {
-			Authorization: `Bearer ${token}`,
-		},
-	})
-
-	if (!response.ok) {
-		const errorData = await response.json().catch(() => ({}))
-
-		if (response.status === 403) {
+	try {
+		return await httpClient.post<InviteToTeamResponse>(`http://localhost:3333/equipes/${idEquipe}/convite`)
+	} catch (error) {
+		if (error instanceof Error && error.message.includes('403')) {
 			throw new Error('Você não tem permissão para convidar participantes para esta equipe')
 		}
-
-		throw new Error(errorData.message || 'Erro ao gerar convite')
+		throw error
 	}
-
-	return response.json()
 }
 
 export function useInviteToTeam() {

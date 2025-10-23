@@ -1,5 +1,6 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { toast } from 'sonner'
+import { httpClient } from '@/lib/http-client'
 
 interface RegisterTeamRequest {
 	nome: string
@@ -8,31 +9,10 @@ interface RegisterTeamRequest {
 interface RegisterTeamResponse {
 	id: string
 	nome: string
-	// Adicione outros campos conforme a resposta da API
 }
 
 async function registerTeam({ nome }: RegisterTeamRequest): Promise<RegisterTeamResponse> {
-	const token = localStorage.getItem('accessToken')
-
-	if (!token) {
-		throw new Error('Token de autenticação não encontrado')
-	}
-
-	const response = await fetch('http://localhost:3333/equipes', {
-		method: 'POST',
-		headers: {
-			'Content-Type': 'application/json',
-			Authorization: `Bearer ${token}`,
-		},
-		body: JSON.stringify({ nome }),
-	})
-
-	if (!response.ok) {
-		const errorData = await response.json().catch(() => ({}))
-		throw new Error(errorData.message || 'Erro ao cadastrar equipe')
-	}
-
-	return response.json()
+	return httpClient.post<RegisterTeamResponse>('http://localhost:3333/equipes', { nome })
 }
 
 function getUserIdFromToken(): string | null {
@@ -62,7 +42,6 @@ export function useRegisterTeam() {
 		mutationFn: registerTeam,
 		onSuccess: () => {
 			toast.success('Equipe cadastrada com sucesso!')
-			// Invalidar a query das equipes para recarregar a lista
 			const userId = getUserIdFromToken()
 			queryClient.invalidateQueries({ queryKey: ['user-teams', userId] })
 		},

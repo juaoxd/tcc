@@ -64,7 +64,6 @@ export function RegisterTeamDialog({ onSuccess }: RegisterTeamDialogProps) {
 	function handleFileSelect(event: React.ChangeEvent<HTMLInputElement>) {
 		const file = event.target.files?.[0]
 		if (file) {
-			// Validar arquivo antes de definir
 			if (file.size > MAX_FILE_SIZE) {
 				form.setError('logo', { message: 'O arquivo deve ter no máximo 5MB' })
 				return
@@ -77,7 +76,6 @@ export function RegisterTeamDialog({ onSuccess }: RegisterTeamDialogProps) {
 			form.setValue('logo', file)
 			form.clearErrors('logo')
 
-			// Criar preview da imagem
 			const reader = new FileReader()
 			reader.onload = (e) => {
 				setLogoPreview(e.target?.result as string)
@@ -100,19 +98,14 @@ export function RegisterTeamDialog({ onSuccess }: RegisterTeamDialogProps) {
 				nome: data.name,
 			})
 
-			// Limpar formulário após sucesso
 			form.reset()
 			setLogoPreview(null)
 			if (fileInputRef.current) {
 				fileInputRef.current.value = ''
 			}
 
-			// Chamar callback de sucesso se fornecido
 			onSuccess?.()
-		} catch (error) {
-			// O erro já é tratado pelo hook useRegisterTeam
-			console.error('Erro ao cadastrar equipe:', error)
-		}
+		} catch {}
 	}
 
 	return (
@@ -122,7 +115,6 @@ export function RegisterTeamDialog({ onSuccess }: RegisterTeamDialogProps) {
 
 			<Form {...form}>
 				<form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-					{/* Upload de Logo */}
 					<FormField
 						control={form.control}
 						name="logo"
@@ -184,7 +176,6 @@ export function RegisterTeamDialog({ onSuccess }: RegisterTeamDialogProps) {
 						)}
 					/>
 
-					{/* Nome da Equipe */}
 					<FormField
 						control={form.control}
 						name="name"
@@ -199,7 +190,6 @@ export function RegisterTeamDialog({ onSuccess }: RegisterTeamDialogProps) {
 						)}
 					/>
 
-					{/* Descrição */}
 					<FormField
 						control={form.control}
 						name="description"
@@ -219,7 +209,6 @@ export function RegisterTeamDialog({ onSuccess }: RegisterTeamDialogProps) {
 						)}
 					/>
 
-					{/* Número Máximo de Membros */}
 					<FormField
 						control={form.control}
 						name="maxMembers"

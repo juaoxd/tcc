@@ -1,5 +1,6 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { toast } from 'sonner'
+import { httpClient } from '@/lib/http-client'
 
 interface AcceptInviteRequest {
 	token: string
@@ -7,39 +8,32 @@ interface AcceptInviteRequest {
 
 interface AcceptInviteResponse {
 	message: string
+	alreadyInTeam?: boolean
 }
 
 async function acceptInvite({ token }: AcceptInviteRequest): Promise<AcceptInviteResponse> {
-	const accessToken = localStorage.getItem('accessToken')
+	try {
+		const responseData = await httpClient.post<AcceptInviteResponse>('http://localhost:3333/convite/aceitar', { token })
 
-	if (!accessToken) {
-		throw new Error('Token de autenticação não encontrado')
-	}
-
-	const response = await fetch('http://localhost:3333/convite/aceitar', {
-		method: 'POST',
-		headers: {
-			'Content-Type': 'application/json',
-			Authorization: `Bearer ${accessToken}`,
-		},
-		body: JSON.stringify({ token }),
-	})
-
-	if (!response.ok) {
-		const errorData = await response.json().catch(() => ({}))
-
-		if (response.status === 400) {
-			throw new Error(errorData.message || 'Token de convite inválido ou expirado')
+		if (responseData.message === 'Usuário já faz parte da equipe') {
+			return {
+				...responseData,
+				alreadyInTeam: true,
+			}
 		}
 
-		if (response.status === 401) {
-			throw new Error('Você precisa estar logado para aceitar o convite')
+		return responseData
+	} catch (error) {
+		if (error instanceof Error) {
+			if (error.message.includes('400')) {
+				throw new Error('Token de convite inválido ou expirado')
+			}
+			if (error.message.includes('401')) {
+				throw new Error('Você precisa estar logado para aceitar o convite')
+			}
 		}
-
-		throw new Error(errorData.message || 'Erro ao aceitar convite')
+		throw error
 	}
-
-	return response.json()
 }
 
 function getUserIdFromToken(): string | null {
@@ -68,11 +62,16 @@ export function useAcceptInvite() {
 	return useMutation({
 		mutationFn: acceptInvite,
 		onSuccess: (data) => {
-			toast.success('Convite aceito com sucesso!', {
-				description: data.message,
-			})
+			if (data.alreadyInTeam) {
+				toast.info('Você já faz parte desta equipe', {
+					description: data.message,
+				})
+			} else {
+				toast.success('Convite aceito com sucesso!', {
+					description: data.message,
+				})
+			}
 
-			// Invalidar a query das equipes para recarregar a lista
 			const userId = getUserIdFromToken()
 			queryClient.invalidateQueries({ queryKey: ['user-teams', userId] })
 		},

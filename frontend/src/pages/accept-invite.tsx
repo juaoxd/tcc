@@ -6,7 +6,7 @@ import { CheckCircle, XCircle, Users, ArrowLeft, Loader2 } from 'lucide-react'
 import { useAcceptInvite } from '@/http/use-accept-invite'
 import { useAuth } from '@/hooks/use-auth'
 
-type InviteStatus = 'loading' | 'ready' | 'accepting' | 'success' | 'error'
+type InviteStatus = 'loading' | 'ready' | 'accepting' | 'success' | 'already_in_team' | 'error'
 
 export function AcceptInvite() {
 	const [searchParams] = useSearchParams()
@@ -18,7 +18,6 @@ export function AcceptInvite() {
 	const acceptInviteMutation = useAcceptInvite()
 	const { data: authData, isLoading: isAuthLoading, error: authError } = useAuth()
 
-	// Verificar se o usuário está autenticado e se há token
 	useEffect(() => {
 		if (isAuthLoading) return
 
@@ -43,8 +42,12 @@ export function AcceptInvite() {
 		setStatus('accepting')
 
 		try {
-			await acceptInviteMutation.mutateAsync({ token })
-			setStatus('success')
+			const result = await acceptInviteMutation.mutateAsync({ token })
+			if (result.alreadyInTeam) {
+				setStatus('already_in_team')
+			} else {
+				setStatus('success')
+			}
 		} catch (error) {
 			setStatus('error')
 			setErrorMessage(error instanceof Error ? error.message : 'Erro desconhecido')
@@ -144,6 +147,39 @@ export function AcceptInvite() {
 		)
 	}
 
+	if (status === 'already_in_team') {
+		return (
+			<div className="min-h-screen bg-background flex items-center justify-center p-4">
+				<Card className="w-full max-w-md">
+					<CardHeader className="text-center">
+						<div className="mx-auto mb-4 h-12 w-12 rounded-full bg-blue-100 flex items-center justify-center">
+							<Users className="h-6 w-6 text-blue-600" />
+						</div>
+						<CardTitle className="text-xl">Você já faz parte desta equipe</CardTitle>
+					</CardHeader>
+					<CardContent className="space-y-4">
+						<p className="text-center text-muted-foreground">
+							Você já é membro desta equipe! Não é necessário aceitar o convite novamente.
+						</p>
+
+						<div className="space-y-3">
+							<Button onClick={handleGoToDashboard} className="w-full">
+								Ir para Dashboard
+							</Button>
+
+							<Link to="/" className="block">
+								<Button variant="outline" className="w-full">
+									<ArrowLeft className="h-4 w-4 mr-2" />
+									Voltar ao Início
+								</Button>
+							</Link>
+						</div>
+					</CardContent>
+				</Card>
+			</div>
+		)
+	}
+
 	if (status === 'accepting') {
 		return (
 			<div className="min-h-screen bg-background flex items-center justify-center p-4">
@@ -160,7 +196,6 @@ export function AcceptInvite() {
 		)
 	}
 
-	// Status 'ready' - mostrar tela para aceitar o convite
 	return (
 		<div className="min-h-screen bg-background flex items-center justify-center p-4">
 			<Card className="w-full max-w-md">

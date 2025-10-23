@@ -21,6 +21,7 @@ import { cadastrarTorneioRoute } from './http/routes/torneios/cadastrar.ts'
 import { listarTorneiosUsuarioRoute } from './http/routes/torneios/listar-torneios-usuario.ts'
 import { loginRoute } from './http/routes/usuarios/login.ts'
 import { logoutRoute } from './http/routes/usuarios/logout.ts'
+import { refreshRoute } from './http/routes/usuarios/refresh.ts'
 import { registerRoute } from './http/routes/usuarios/register.ts'
 
 const server = fastify().withTypeProvider<ZodTypeProvider>()
@@ -71,6 +72,7 @@ server.decorate('authenticate', authMiddleware)
 server.register(registerRoute)
 server.register(loginRoute)
 server.register(logoutRoute)
+server.register(refreshRoute)
 server.register(cadastrarTorneioRoute)
 server.register(listarTorneiosUsuarioRoute)
 server.register(cadastrarEquipeRoute)

@@ -1,5 +1,6 @@
 import { useQuery } from '@tanstack/react-query'
 import { getAccessToken } from '@/hooks/use-auth'
+import { httpClient } from '@/lib/http-client'
 
 type Tournament = {
 	id: string
@@ -18,37 +19,23 @@ export function useListUserTournaments() {
 	return useQuery({
 		queryKey: ['tournaments', 'user'],
 		queryFn: async (): Promise<Tournament[]> => {
-			const accessToken = getAccessToken()
-
-			const response = await fetch('http://localhost:3333/usuarios/torneios', {
-				method: 'GET',
-				headers: {
-					'Content-Type': 'application/json',
-					...(accessToken && { Authorization: `Bearer ${accessToken}` }),
+			const result = await httpClient.get<{ torneios?: Tournament[] } | Tournament[]>(
+				'http://localhost:3333/usuarios/torneios',
+				{
+					credentials: 'include',
 				},
-				credentials: 'include',
-			})
+			)
 
-			if (!response.ok) {
-				const error = await response.json()
-				throw new Error(error.message || 'Erro ao buscar torneios')
-			}
-
-			const result = await response.json()
-
-			// A API retorna um objeto com a propriedade 'torneios'
 			if (result?.torneios && Array.isArray(result.torneios)) {
 				return result.torneios
 			}
 
-			// Fallback para outros formatos possíveis
 			if (Array.isArray(result)) {
 				return result
 			}
 
-			// Se não encontrar array, retorna array vazio
 			return []
 		},
-		enabled: !!getAccessToken(), // Só executa se tiver token
+		enabled: !!getAccessToken(),
 	})
 }

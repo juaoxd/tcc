@@ -27,7 +27,6 @@ async function refreshToken(): Promise<string> {
 
 async function verifyAuth(): Promise<{ user: AuthUser }> {
 	const accessToken = localStorage.getItem('accessToken')
-	console.log('verifyAuth - Access token:', accessToken)
 
 	if (!accessToken) {
 		throw new Error('Não autenticado')
@@ -44,9 +43,25 @@ async function verifyAuth(): Promise<{ user: AuthUser }> {
 		const payload = JSON.parse(atob(tokenParts[1]))
 
 		const now = Date.now() / 1000
+
 		if (payload.exp && payload.exp < now) {
-			localStorage.removeItem('accessToken')
-			throw new Error('Token expirado')
+			try {
+				const newToken = await refreshToken()
+
+				const newTokenParts = newToken.split('.')
+				if (newTokenParts.length === 3) {
+					const newPayload = JSON.parse(atob(newTokenParts[1]))
+					return {
+						user: {
+							id: newPayload.sub || newPayload.id || newPayload.userId || 'unknown',
+							email: newPayload.email || newPayload.user?.email || 'user@example.com',
+						},
+					}
+				}
+			} catch (refreshError) {
+				localStorage.removeItem('accessToken')
+				throw new Error('Token expirado e não foi possível renovar')
+			}
 		}
 
 		return {
@@ -56,7 +71,6 @@ async function verifyAuth(): Promise<{ user: AuthUser }> {
 			},
 		}
 	} catch (error) {
-		console.log(error)
 		localStorage.removeItem('accessToken')
 		throw new Error('Token inválido')
 	}

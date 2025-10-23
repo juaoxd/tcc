@@ -5,6 +5,9 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { Home } from './pages/home'
 import { Login } from './pages/login'
 import { AcceptInvite } from './pages/accept-invite'
+import { StartTournament } from './pages/start-tournament'
+import { ManageTournament } from './pages/manage-tournament'
+import { TournamentDetails } from './pages/tournament-details'
 import { Toaster } from './components/ui/sonner'
 import { ProtectedRoute } from './components/protected-route'
 
@@ -28,6 +31,23 @@ export function App() {
 						element={
 							<ProtectedRoute>
 								<Home />
+							</ProtectedRoute>
+						}
+					/>
+					<Route path="/torneio/:tournamentId" element={<TournamentDetails />} />
+					<Route
+						path="/torneio/:tournamentId/iniciar"
+						element={
+							<ProtectedRoute>
+								<StartTournament />
+							</ProtectedRoute>
+						}
+					/>
+					<Route
+						path="/torneio/:tournamentId/gerenciar"
+						element={
+							<ProtectedRoute>
+								<ManageTournament />
 							</ProtectedRoute>
 						}
 					/>

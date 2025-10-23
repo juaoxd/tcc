@@ -11,6 +11,7 @@ import {
 	SidebarMenuButton,
 	SidebarMenuItem,
 	SidebarFooter,
+	SidebarTrigger,
 } from '@/components/ui/sidebar'
 import { useLogout } from '@/http/use-logout'
 import { Button } from '@/components/ui/button'
@@ -43,8 +44,9 @@ export function AppSidebar({ activeSection, onSectionChange }: AppSidebarProps) 
 	return (
 		<Sidebar>
 			<SidebarHeader>
-				<div className="flex items-center gap-2 px-4 py-2">
-					<h1 className="text-xl font-bold">Dashboard</h1>
+				<div className="flex items-center justify-between px-4 py-2">
+					<h1 className="text-xl font-bold">Início</h1>
+					<SidebarTrigger />
 				</div>
 			</SidebarHeader>
 			<SidebarContent>

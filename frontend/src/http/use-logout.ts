@@ -28,7 +28,6 @@ export function useLogout() {
 			return response.json()
 		},
 		onSuccess: () => {
-			// Limpar todas as queries relacionadas ao usuário
 			queryClient.removeQueries({ queryKey: ['auth'] })
 			queryClient.removeQueries({ queryKey: ['user-teams'] })
 			queryClient.removeQueries({ queryKey: ['user-tournaments'] })
@@ -36,7 +35,6 @@ export function useLogout() {
 			navigate('/login', { replace: true })
 		},
 		onError: () => {
-			// Limpar todas as queries relacionadas ao usuário mesmo em caso de erro
 			queryClient.removeQueries({ queryKey: ['auth'] })
 			queryClient.removeQueries({ queryKey: ['user-teams'] })
 			queryClient.removeQueries({ queryKey: ['user-tournaments'] })

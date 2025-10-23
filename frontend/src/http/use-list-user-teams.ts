@@ -1,4 +1,5 @@
 import { useQuery } from '@tanstack/react-query'
+import { httpClient } from '@/lib/http-client'
 
 interface UserTeam {
 	id: string
@@ -32,26 +33,7 @@ function getUserIdFromToken(): string | null {
 }
 
 async function listUserTeams(): Promise<ListUserTeamsResponse> {
-	const token = localStorage.getItem('accessToken')
-
-	if (!token) {
-		throw new Error('Token de autenticação não encontrado')
-	}
-
-	const response = await fetch('http://localhost:3333/usuarios/equipes', {
-		method: 'GET',
-		headers: {
-			'Content-Type': 'application/json',
-			Authorization: `Bearer ${token}`,
-		},
-	})
-
-	if (!response.ok) {
-		const errorData = await response.json().catch(() => ({}))
-		throw new Error(errorData.message || 'Erro ao buscar equipes')
-	}
-
-	return response.json()
+	return httpClient.get<ListUserTeamsResponse>('http://localhost:3333/usuarios/equipes')
 }
 
 export function useListUserTeams() {

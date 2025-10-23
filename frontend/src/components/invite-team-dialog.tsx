@@ -26,19 +26,15 @@ export function InviteTeamDialog({ teamId, teamName, onClose }: InviteTeamDialog
 		try {
 			const result = await inviteToTeamMutation.mutateAsync({ idEquipe: teamId })
 
-			// Se já havia um link, ativar animação de atualização
 			if (inviteLink) {
 				setLinkUpdated(true)
-				setTimeout(() => setLinkUpdated(false), 1500) // Remove animação após 1.5s
+				setTimeout(() => setLinkUpdated(false), 1500)
 			}
 
 			setInviteLink(result.linkConvite)
 			setExpiresIn(result.expiresIn)
-			setCopied(false) // Reset do estado de copiado
-		} catch (error) {
-			// O erro já é tratado pelo hook useInviteToTeam
-			console.error('Erro ao gerar convite:', error)
-		}
+			setCopied(false)
+		} catch {}
 	}
 
 	const handleCopyLink = async () => {
@@ -47,14 +43,11 @@ export function InviteTeamDialog({ teamId, teamName, onClose }: InviteTeamDialog
 				await navigator.clipboard.writeText(inviteLink)
 				setCopied(true)
 				setTimeout(() => setCopied(false), 2000)
-			} catch (error) {
-				console.error('Erro ao copiar link:', error)
-			}
+			} catch {}
 		}
 	}
 
 	const formatExpirationTime = (expiresIn: string) => {
-		// O backend retorna strings como "15 minutos"
 		return expiresIn
 	}
 
